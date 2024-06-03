@@ -24,7 +24,7 @@
 
 [project]
 name = "ucdp-ipxact"
-version = "0.2.0"
+version = "0.1.0"
 description = "Unified Chip Design Platform - IPXACT"
 readme = "README.md"
 authors = [
@@ -73,6 +73,9 @@ doc = [
 
 [tool.pdm.build]
 includes = ["src/ucdp_ipxact"]
+
+[project.entry-points."ucdp.cli"]
+ipxact = "ucdp_ipxact.cli.ipxact"
 
 [tool.ruff]
 line-length = 120

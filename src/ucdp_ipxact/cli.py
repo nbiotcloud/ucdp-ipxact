@@ -22,27 +22,28 @@
 # SOFTWARE.
 #
 
-"""Unified Chip Design Platform - IPXACT."""
+"""Command Line Interface."""
 
-from inspect import getfile
-from logging import getLogger
 from pathlib import Path
 
-import ucdp as u
+import click
+from ucdp.cli import pass_ctx
 
-LOGGER = getLogger(__name__)
+from ucdp_ipxact.parser import validate
+from ucdp_ipxact.ucdp_ipxact import UcdpIpxactMod
 
 
-class UcdpIpxactMod(u.AMod):
-    """IPXACT Import Module."""
+@click.group()
+def ipxact():
+    """IPXACT Commands."""
 
-    filepath: Path
 
-    def _build(self):
-        basedir = Path(getfile(self.parent.__class__)).parent if self.parent else None
-        filepath = u.improved_resolve(self.filepath, basedir=basedir, strict=True, replace_envvars=True)
-        LOGGER.debug("Reading %s", filepath)
-        self.add_port(u.UintType(20), "port_i")
-
-    # def get_addrspaces(self) -> Iterator[Addrspace]:
-    #     yield
+@ipxact.command()
+@click.argument("ipxact", type=click.Path(exists=True))
+@pass_ctx
+def check(ctx, ipxact: Path):
+    """Check - Validate IPXACT and try to import."""
+    ipxact = Path(ipxact)
+    validate(ipxact)
+    UcdpIpxactMod(filepath=ipxact)
+    ctx.console.log(f"{str(ipxact)!r} checked.")

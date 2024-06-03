@@ -24,4 +24,17 @@
 
 """Unified Chip Design Platform - IPXACT Parser."""
 
+from pathlib import Path
+
+import ucdp as u
+
+
+def validate(path: Path):
+    """Validate IPXACT at `path`."""
+    path = u.improved_resolve(path, strict=True, replace_envvars=True)
+    # your validate goes here
+    if not path.exists():
+        raise ValueError("Invalid")
+
+
 # Your Parser Goes Here
