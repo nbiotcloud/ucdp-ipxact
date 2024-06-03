@@ -1,0 +1,1 @@
+Port(UintType(20), 'port_i', direction=IN)
