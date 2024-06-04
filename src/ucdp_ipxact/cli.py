@@ -27,9 +27,8 @@
 from pathlib import Path
 
 import click
-from ucdp.cli import pass_ctx
 
-from ucdp_ipxact.parser import validate
+from ucdp_ipxact.validator import validate
 from ucdp_ipxact.ucdp_ipxact import UcdpIpxactMod
 
 
@@ -40,10 +39,9 @@ def ipxact():
 
 @ipxact.command()
 @click.argument("ipxact", type=click.Path(exists=True))
-@pass_ctx
-def check(ctx, ipxact: Path):
+def check(ipxact: Path):
     """Check - Validate IPXACT and try to import."""
     ipxact = Path(ipxact)
     validate(ipxact)
     UcdpIpxactMod(filepath=ipxact)
-    ctx.console.log(f"{str(ipxact)!r} checked.")
+    print(f"{str(ipxact)!r} checked.")

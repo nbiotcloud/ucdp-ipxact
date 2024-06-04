@@ -29,7 +29,7 @@ from pathlib import Path
 import ucdp as u
 
 
-def validate(path: Path):
+def importer(path: Path):
     """Validate IPXACT at `path`."""
     path = u.improved_resolve(path, strict=True, replace_envvars=True)
     # your validate goes here
@@ -38,3 +38,4 @@ def validate(path: Path):
 
 
 # Your Parser Goes Here
+from xsdata.formats.dataclass.parsers import XmlParser
