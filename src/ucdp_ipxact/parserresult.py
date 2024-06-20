@@ -22,28 +22,16 @@
 # SOFTWARE.
 #
 
-"""Unified Chip Design Platform - IPXACT."""
+"""IPXACT Parser."""
 
-from pathlib import Path
-
-from .parser import Parser
-from .parsermanager import ParserManager
-from .parserresult import ParserResult
-from .util import resolve_filepath
-
-__all__ = ["ParserManager", "Parser", "ParserResult", "resolve_filepath"]
+import ucdp as u
+from ucdp_glbl.addrspace import Addrspace
 
 
-def validate(filepath: Path) -> bool:
-    parsermanager = ParserManager.create()
-    return parsermanager.validate(filepath)
+class ParserResult(u.Object):
+    """ParserResult."""
 
-
-def parse(filepath: Path) -> ParserResult:
-    parsermanager = ParserManager.create()
-    return parsermanager.parse(filepath)
-
-
-def get_parser(filepath: Path) -> Parser:
-    parsermanager = ParserManager.create()
-    return parsermanager.get_parser(filepath)
+    libname: str
+    modname: str
+    ports: tuple[u.Port, ...] = ()
+    addrspaces: tuple[Addrspace, ...] = ()

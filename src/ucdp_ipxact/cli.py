@@ -27,9 +27,9 @@
 from pathlib import Path
 
 import click
+from ucdp_glbl import AddrMap
 
-from ucdp_ipxact.validator import validate
-from ucdp_ipxact.ucdp_ipxact import UcdpIpxactMod
+from ucdp_ipxact import get_parser
 
 
 @click.group()
@@ -42,6 +42,23 @@ def ipxact():
 def check(ipxact: Path):
     """Check - Validate IPXACT and try to import."""
     ipxact = Path(ipxact)
-    validate(ipxact)
-    UcdpIpxactMod(filepath=ipxact)
+    parser = get_parser(ipxact)
+    parser.is_compatible(ipxact)
+    print(f"valid: {parser.validate(ipxact)}")
+    # parser.parse(ipxact)
     print(f"{str(ipxact)!r} checked.")
+
+    comp = parser._read(ipxact)
+
+    addrspace = tuple(parser._get_addrspaces(comp))
+    print(repr(addrspace[0]))
+    for word in addrspace[0].words:
+        print(word)
+        for field in word.fields:
+            print(field)
+            # field_type = field.type_
+            # if field_type is not u.UintType(field_type.width):
+            #     for item in field_type.values():
+            #         print("  ", item)
+    addrmap = AddrMap.from_addrspaces(list(addrspace))
+    print(addrmap.get_overview())

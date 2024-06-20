@@ -21,29 +21,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
+"""Test Parser Manager."""
 
-"""Unified Chip Design Platform - IPXACT."""
-
-from pathlib import Path
-
-from .parser import Parser
-from .parsermanager import ParserManager
-from .parserresult import ParserResult
-from .util import resolve_filepath
-
-__all__ = ["ParserManager", "Parser", "ParserResult", "resolve_filepath"]
+from ucdp_ipxact.parsermanager import ParserManager
 
 
-def validate(filepath: Path) -> bool:
+def test_basics():
+    """Basic Testing."""
+    parsermanager = ParserManager()
+    assert len(parsermanager.parsers) == 0
+
+    # assert parsermanager.is_compatible() is False
+
+
+def test_create():
+    """Check Parser Manager Initialization."""
     parsermanager = ParserManager.create()
-    return parsermanager.validate(filepath)
+    assert len(parsermanager.parsers) == 1
 
 
-def parse(filepath: Path) -> ParserResult:
+def test_compatible():
+    """Check Parser Manager is_compatible."""
     parsermanager = ParserManager.create()
-    return parsermanager.parse(filepath)
+    assert parsermanager.is_compatible("tests/testdata/example.xml")
 
 
-def get_parser(filepath: Path) -> Parser:
+def test_validate():
+    """Check Parser Manager validate."""
     parsermanager = ParserManager.create()
-    return parsermanager.get_parser(filepath)
+    assert parsermanager.validate("tests/testdata/example.xml")

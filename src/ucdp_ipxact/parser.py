@@ -22,20 +22,59 @@
 # SOFTWARE.
 #
 
-"""Unified Chip Design Platform - IPXACT Parser."""
+"""IPXACT Parser."""
 
+from collections.abc import Iterator
 from pathlib import Path
 
 import ucdp as u
+from ucdp_glbl.addrspace import Addrspace
+
+from .parserresult import ParserResult
 
 
-def importer(path: Path):
-    """Validate IPXACT at `path`."""
-    path = u.improved_resolve(path, strict=True, replace_envvars=True)
-    # your validate goes here
-    if not path.exists():
-        raise ValueError("Invalid")
+class Parser(u.Object):
+    """General IPXACT Parser."""
 
+    prio: int = 0
 
-# Your Parser Goes Here
-from xsdata.formats.dataclass.parsers import XmlParser
+    @staticmethod
+    def is_compatible(filepath: Path) -> bool:
+        """Check if Parsable."""
+        raise NotImplementedError
+
+    @staticmethod
+    def validate(filepath: Path) -> bool:
+        """Validate."""
+        raise NotImplementedError
+
+    def parse(self, filepath: Path) -> ParserResult:
+        """Parse."""
+        data = self._read(filepath)
+        return ParserResult(
+            libname=self._get_library(data),
+            modname=self._get_name(data),
+            ports=tuple(self._get_ports(data)),
+            addrspaces=tuple(self._get_addrspaces(data)),
+        )
+
+    def _read(self, filepath: Path):
+        raise NotImplementedError
+
+    def _get_vendor(self, data) -> str:
+        raise NotImplementedError
+
+    def _get_name(self, data) -> str:
+        raise NotImplementedError
+
+    def _get_library(self, data) -> str:
+        raise NotImplementedError
+
+    def _get_version(self, data) -> str:
+        raise NotImplementedError
+
+    def _get_ports(self, data) -> Iterator[u.Port]:
+        raise NotImplementedError
+
+    def _get_addrspaces(self, data) -> Iterator[Addrspace]:
+        raise NotImplementedError

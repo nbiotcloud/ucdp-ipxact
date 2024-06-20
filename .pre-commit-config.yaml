@@ -1,3 +1,4 @@
+exclude: "^src/ucdp_ipxact/.*/xml_schema.*"
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.

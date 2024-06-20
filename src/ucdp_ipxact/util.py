@@ -22,28 +22,16 @@
 # SOFTWARE.
 #
 
-"""Unified Chip Design Platform - IPXACT."""
+"""IPXACT Utilities."""
 
 from pathlib import Path
 
-from .parser import Parser
-from .parsermanager import ParserManager
-from .parserresult import ParserResult
-from .util import resolve_filepath
-
-__all__ = ["ParserManager", "Parser", "ParserResult", "resolve_filepath"]
+import ucdp as u
 
 
-def validate(filepath: Path) -> bool:
-    parsermanager = ParserManager.create()
-    return parsermanager.validate(filepath)
-
-
-def parse(filepath: Path) -> ParserResult:
-    parsermanager = ParserManager.create()
-    return parsermanager.parse(filepath)
-
-
-def get_parser(filepath: Path) -> Parser:
-    parsermanager = ParserManager.create()
-    return parsermanager.get_parser(filepath)
+def resolve_filepath(filepath: Path) -> Path:
+    """Check if file exists."""
+    filepath = u.improved_resolve(filepath, strict=True, replace_envvars=True)
+    if filepath.exists():
+        return filepath
+    raise ValueError(f"Filepath does not exist: {filepath}")

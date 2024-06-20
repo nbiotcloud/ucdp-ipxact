@@ -23,12 +23,39 @@
 #
 """Test IPXACT Importing."""
 
+from pathlib import Path
+
+from test2ref import assert_refdata
+from ucdp_ipxact import parse
 
 # class ExampleMod(u.AMod):
 #     """Just an Example Module which instantiates an IPXACT Module."""
 
 #     def _build(self):
 #         UcdpIpxactMod(self, "u_example", filepath=Path("testdata/example.xml"))
+
+TESTDATA_PATH = Path(__file__).parent / "testdata"
+
+
+def _dump(filepath, result):
+    with filepath.open("w") as file:
+        file.write(f"libname: {result.libname}\n")
+        file.write(f"modname: {result.modname}\n")
+        file.write("Ports\n")
+        for port in result.ports:
+            file.write(f"  {port!r}\n")
+        file.write("Addrspaces\n")
+        for addrspace in result.addrspaces:
+            file.write(f"  {addrspace!r}\n")
+
+
+def test_spririt_2009(tmp_path):
+    """Compare spirit 2009 example xml out."""
+    filepath = TESTDATA_PATH / "example.xml"
+    result = parse(filepath)
+
+    _dump(tmp_path / "result.txt", result)
+    assert_refdata(test_spririt_2009, tmp_path)
 
 
 # def test_example(tmp_path):
