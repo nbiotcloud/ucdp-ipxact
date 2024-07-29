@@ -22,16 +22,39 @@
 # SOFTWARE.
 #
 
-"""IPXACT Parser."""
+"""Unified Chip Design Platform - IPXACT."""
+
+from logging import getLogger
 
 import ucdp as u
-from ucdp_glbl.addrspace import Addrspace
+from tabulate import tabulate
+from ucdp_addr import AddrMap, Addrspace
+
+LOGGER = getLogger(__name__)
 
 
-class ParserResult(u.Object):
-    """ParserResult."""
+class UcdpIpxact(u.Object):
+    """UCDP Representation of IPXACT."""
 
+    vendor: str
+    version: str
     libname: str
-    modname: str
+    name: str
     ports: tuple[u.Port, ...] = ()
     addrspaces: tuple[Addrspace, ...] = ()
+    filelists: u.ModFileLists = ()
+
+    def get_overview(self) -> str:
+        """Nice Overview."""
+        addrmap = AddrMap.from_addrspaces(self.addrspaces)
+        ports = [(port.direction, port.name, port.type_) for port in self.ports]
+        data = (
+            ("Attribute", "Value"),
+            ("vendor", self.vendor),
+            ("version", self.version),
+            ("libname", self.libname),
+            ("name", self.name),
+            ("ports", tabulate(ports, headers=("I/O", "Name", "Type"))),
+            ("addrmap", addrmap.get_overview()),
+        )
+        return tabulate(data, tablefmt="fancy_grid") + "\n"

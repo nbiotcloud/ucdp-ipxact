@@ -24,26 +24,17 @@
 
 """Unified Chip Design Platform - IPXACT."""
 
-from pathlib import Path
-
+from .ipxact import UcdpIpxact
+from .mod import UcdpIpxactMod
 from .parser import Parser
-from .parsermanager import ParserManager
-from .parserresult import ParserResult
-from .util import resolve_filepath
+from .parsermanager import ParserManager, get_parser, parse, validate
 
-__all__ = ["ParserManager", "Parser", "ParserResult", "resolve_filepath"]
-
-
-def validate(filepath: Path) -> bool:
-    parsermanager = ParserManager.create()
-    return parsermanager.validate(filepath)
-
-
-def parse(filepath: Path) -> ParserResult:
-    parsermanager = ParserManager.create()
-    return parsermanager.parse(filepath)
-
-
-def get_parser(filepath: Path) -> Parser:
-    parsermanager = ParserManager.create()
-    return parsermanager.get_parser(filepath)
+__all__ = [
+    "get_parser",
+    "parse",
+    "Parser",
+    "ParserManager",
+    "UcdpIpxact",
+    "UcdpIpxactMod",
+    "validate",
+]

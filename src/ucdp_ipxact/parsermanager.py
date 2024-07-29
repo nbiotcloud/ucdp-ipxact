@@ -31,9 +31,8 @@ from pathlib import Path
 
 import ucdp as u
 
+from .ipxact import UcdpIpxact
 from .parser import Parser
-from .parserresult import ParserResult
-from .util import resolve_filepath
 
 LOGGER = logging.getLogger(__name__)
 
@@ -49,7 +48,7 @@ class ParserManager(u.Object):
         parsermanager = ParserManager()
         for entry_point in entry_points(group="ucdp_ipxact.parser"):
             parsercls = _load(entry_point.value)
-            if not issubclass(parsercls, Parser):
+            if not issubclass(parsercls, Parser):  # pragma: no cover
                 LOGGER.warning("Entrypoint %s %s is not a IPXACT-Parser", entry_point.name, entry_point.value)
                 continue
             parsermanager.add(parsercls())
@@ -66,7 +65,7 @@ class ParserManager(u.Object):
 
     def is_compatible(self, filepath: Path) -> bool:
         """Check if Parsable."""
-        filepath = resolve_filepath(filepath)
+        filepath = u.improved_resolve(filepath, strict=True, replace_envvars=True)
         for parser in self._parsers:
             if parser.is_compatible(filepath):
                 return True
@@ -74,12 +73,12 @@ class ParserManager(u.Object):
 
     def validate(self, filepath: Path) -> bool:
         """Validate."""
-        filepath = resolve_filepath(filepath)
+        filepath = u.improved_resolve(filepath, strict=True, replace_envvars=True)
         return self.get_parser(filepath).validate(filepath)
 
-    def parse(self, filepath: Path) -> ParserResult:
+    def parse(self, filepath: Path) -> UcdpIpxact:
         """Parse."""
-        filepath = resolve_filepath(filepath)
+        filepath = u.improved_resolve(filepath, strict=True, replace_envvars=True)
         return self.get_parser(filepath).parse(filepath)
 
     def get_parser(self, filepath: Path) -> Parser:
@@ -94,3 +93,21 @@ def _load(ref):
     modname, cmd_object_name = ref.rsplit(".", 1)
     mod = importlib.import_module(modname)
     return getattr(mod, cmd_object_name)
+
+
+def validate(filepath: Path) -> bool:
+    """Validate IPXACT."""
+    parsermanager = ParserManager.create()
+    return parsermanager.validate(filepath)
+
+
+def parse(filepath: Path) -> UcdpIpxact:
+    """Parse IPXACT."""
+    parsermanager = ParserManager.create()
+    return parsermanager.parse(filepath)
+
+
+def get_parser(filepath: Path) -> Parser:
+    """Determine Parser for IPXACT."""
+    parsermanager = ParserManager.create()
+    return parsermanager.get_parser(filepath)

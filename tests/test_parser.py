@@ -25,70 +25,57 @@
 
 from pathlib import Path
 
+import ucdp as u
+from pytest import raises
 from test2ref import assert_refdata
-from ucdp_ipxact import parse
-
-# class ExampleMod(u.AMod):
-#     """Just an Example Module which instantiates an IPXACT Module."""
-
-#     def _build(self):
-#         UcdpIpxactMod(self, "u_example", filepath=Path("testdata/example.xml"))
+from ucdp_ipxact import UcdpIpxactMod, parse, validate
 
 TESTDATA_PATH = Path(__file__).parent / "testdata"
 
 
-def _dump(filepath, result):
-    with filepath.open("w") as file:
-        file.write(f"libname: {result.libname}\n")
-        file.write(f"modname: {result.modname}\n")
-        file.write("Ports\n")
-        for port in result.ports:
-            file.write(f"  {port!r}\n")
-        file.write("Addrspaces\n")
-        for addrspace in result.addrspaces:
-            file.write(f"  {addrspace!r}\n")
+class Top2009Mod(u.AMod):
+    """2009 Version."""
+
+    def _build(self):
+        UcdpIpxactMod(self, "u_inst0", filepath=Path("testdata/example-2009.xml"))
+        UcdpIpxactMod(self, "u_inst1", filepath=Path("testdata/example-2009.xml"))
 
 
-def test_spririt_2009(tmp_path):
-    """Compare spirit 2009 example xml out."""
-    filepath = TESTDATA_PATH / "example.xml"
-    result = parse(filepath)
-
-    _dump(tmp_path / "result.txt", result)
-    assert_refdata(test_spririt_2009, tmp_path)
+def test_missing_file(tmp_path):
+    """Missing."""
+    with raises(FileNotFoundError):
+        validate(tmp_path / "missing.xml")
 
 
-# def test_example(tmp_path):
-#     """Test Example."""
-#     top = ExampleMod()
-
-#     _dump(top.get_inst("u_example"), tmp_path)
-
-#     assert_refdata(test_example, tmp_path)
+def test_validate_2009():
+    """Validate 2009 Example Xml."""
+    assert validate(TESTDATA_PATH / "example-2009.xml") is True
 
 
-# class CornerMod(u.AMod):
-#     """Just an Example Module which instantiates an IPXACT Module."""
-
-#     def _build(self):
-#         UcdpIpxactMod(self, "u_example", filepath=Path("testdata/corner.xml"))
-
-
-# def test_corner(tmp_path):
-#     """Test Corner Cases."""
-#     top = CornerMod()
-
-#     _dump(top.get_inst("u_example"), tmp_path)
-
-#     assert_refdata(test_corner, tmp_path)
+def test_parse_2009(tmp_path):
+    """Parse 2009 Example Xml."""
+    filepath = TESTDATA_PATH / "example-2009.xml"
+    ipxact = parse(filepath)
+    (tmp_path / "result.txt").write_text(ipxact.get_overview())
+    assert_refdata(test_parse_2009, tmp_path)
 
 
-# def _dump(mod: u.BaseMod, path: Path):
-#     # Ports
-#     ports_filepath = path / "ports.txt"
-#     with ports_filepath.open("w") as ports_file:
-#         for item in mod.namespace:
-#             ports_file.write(f"{item!r}\n")
+def test_mod_2009(tmp_path):
+    """2009 Example Module."""
+    mod = Top2009Mod()
 
-#     # Addrspace
-#     # TODO
+    inst0 = mod.get_inst("u_inst0")
+    (tmp_path / "inst0.txt").write_text(inst0.get_overview())
+    assert inst0.name == "u_inst0"
+    assert inst0.modname == "VGA"
+    assert inst0.libname == "user"
+    assert len(tuple(inst0.get_addrspaces())) == 2
+
+    inst1 = mod.get_inst("u_inst1")
+    (tmp_path / "inst1.txt").write_text(inst1.get_overview())
+    assert inst1.name == "u_inst1"
+    assert inst1.modname == "VGA"
+    assert inst1.libname == "user"
+    assert len(tuple(inst1.get_addrspaces())) == 2
+
+    assert_refdata(test_mod_2009, tmp_path)

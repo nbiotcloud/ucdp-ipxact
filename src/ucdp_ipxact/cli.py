@@ -24,41 +24,44 @@
 
 """Command Line Interface."""
 
+import sys
+from contextlib import contextmanager
 from pathlib import Path
 
 import click
-from ucdp_glbl import AddrMap
+import ucdp as u
 
-from ucdp_ipxact import get_parser
+from ucdp_ipxact import UcdpIpxact, get_parser
+
+ipxact = u.cli.get_group("IPXACT Commands")
 
 
-@click.group()
-def ipxact():
-    """IPXACT Commands."""
+@contextmanager
+def _load(console, filepath: Path) -> UcdpIpxact:
+    try:
+        parser = get_parser(filepath)
+        parser.validate(filepath)
+        ucdp_ipxact = parser.parse(filepath)
+    except Exception as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        print(f"'{filepath!s}' is INVALID.")
+        sys.exit(1)
+    yield ucdp_ipxact
 
 
 @ipxact.command()
-@click.argument("ipxact", type=click.Path(exists=True))
-def check(ipxact: Path):
-    """Check - Validate IPXACT and try to import."""
-    ipxact = Path(ipxact)
-    parser = get_parser(ipxact)
-    parser.is_compatible(ipxact)
-    print(f"valid: {parser.validate(ipxact)}")
-    # parser.parse(ipxact)
-    print(f"{str(ipxact)!r} checked.")
+@click.argument("ipxact", type=click.Path(exists=True, path_type=Path))
+@u.cli.pass_ctx
+def check(ctx, ipxact: Path):
+    """Validate IPXACT and convert to UCDP Format."""
+    with _load(ctx.console, ipxact):
+        print(f"'{ipxact!s}' is valid.")
 
-    comp = parser._read(ipxact)
 
-    addrspace = tuple(parser._get_addrspaces(comp))
-    print(repr(addrspace[0]))
-    for word in addrspace[0].words:
-        print(word)
-        for field in word.fields:
-            print(field)
-            # field_type = field.type_
-            # if field_type is not u.UintType(field_type.width):
-            #     for item in field_type.values():
-            #         print("  ", item)
-    addrmap = AddrMap.from_addrspaces(list(addrspace))
-    print(addrmap.get_overview())
+@ipxact.command()
+@click.argument("ipxact", type=click.Path(exists=True, path_type=Path))
+@u.cli.pass_ctx
+def overview(ctx, ipxact: Path):
+    """Load IPXACT and Show Overview."""
+    with _load(ctx.console, ipxact) as ucdp_result:
+        print(ucdp_result.get_overview())

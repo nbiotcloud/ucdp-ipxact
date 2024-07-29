@@ -36,7 +36,7 @@ from ucdp.humannum import Hex
 from ucdp.orientation import IN, INOUT, OUT
 from ucdp.signal import Port
 from ucdp.typescalar import BitType, UintType
-from ucdp_glbl.addrspace import Addrspace
+from ucdp_addr.addrspace import Addrspace
 from ucdp_ipxact import Parser
 
 # generated with: xsdata spirit_1685_2009/xml_schema/component.xsd -ss single-package -p schema_dataclass_pkg
@@ -75,7 +75,10 @@ class GenericIpxactEnumType(u.AEnumType):
 
 @lru_cache
 def _is_compatible(filepath: Path) -> bool:
-    etree = ElementTree.parse(filepath)
+    try:
+        etree = ElementTree.parse(filepath)
+    except Exception:
+        return False
     root = etree.getroot().tag
     return "XMLSchema/SPIRIT/1685-2009}" in root
 

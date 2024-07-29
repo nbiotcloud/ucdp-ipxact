@@ -23,6 +23,9 @@
 #
 """Test Parser Manager."""
 
+import re
+
+from pytest import raises
 from ucdp_ipxact.parsermanager import ParserManager
 
 
@@ -30,8 +33,6 @@ def test_basics():
     """Basic Testing."""
     parsermanager = ParserManager()
     assert len(parsermanager.parsers) == 0
-
-    # assert parsermanager.is_compatible() is False
 
 
 def test_create():
@@ -43,10 +44,15 @@ def test_create():
 def test_compatible():
     """Check Parser Manager is_compatible."""
     parsermanager = ParserManager.create()
-    assert parsermanager.is_compatible("tests/testdata/example.xml")
+    assert parsermanager.is_compatible("tests/testdata/example-2009.xml") is True
+    assert parsermanager.is_compatible("tests/testdata/empty.xml") is False
 
 
 def test_validate():
     """Check Parser Manager validate."""
     parsermanager = ParserManager.create()
-    assert parsermanager.validate("tests/testdata/example.xml")
+    assert parsermanager.validate("tests/testdata/example-2009.xml") is True
+
+    msg = "Unknown schema in"
+    with raises(ValueError, match=re.escape(msg)):
+        parsermanager.validate("tests/testdata/empty.xml")

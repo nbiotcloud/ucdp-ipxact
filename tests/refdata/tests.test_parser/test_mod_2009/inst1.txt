@@ -1,0 +1,115 @@
+╒═══════════╤══════════════════════════════════════════════════════════════════════════════════════╕
+│ Attribute │ Value                                                                                │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ vendor    │ customer.com                                                                         │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ version   │ 1.0                                                                                  │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ libname   │ user                                                                                 │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ name      │ VGA                                                                                  │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ ports     │ I/O    Name                  Type                                                    │
+│           │ -----  --------------------  ------------                                            │
+│           │ IN     s_axi_config_awaddr   UintType(4)                                             │
+│           │ IN     s_axi_config_awprot   UintType(3)                                             │
+│           │ IN     s_axi_config_awvalid  BitType()                                               │
+│           │ OUT    s_axi_config_awready  BitType()                                               │
+│           │ IN     s_axi_config_wdata    UintType(32)                                            │
+│           │ IN     s_axi_config_wstrb    UintType(4)                                             │
+│           │ IN     s_axi_config_wvalid   BitType()                                               │
+│           │ OUT    s_axi_config_wready   BitType()                                               │
+│           │ OUT    s_axi_config_bresp    UintType(2)                                             │
+│           │ OUT    s_axi_config_bvalid   BitType()                                               │
+│           │ IN     s_axi_config_bready   BitType()                                               │
+│           │ IN     s_axi_config_araddr   UintType(4)                                             │
+│           │ IN     s_axi_config_arprot   UintType(3)                                             │
+│           │ IN     s_axi_config_arvalid  BitType()                                               │
+│           │ OUT    s_axi_config_arready  BitType()                                               │
+│           │ OUT    s_axi_config_rdata    UintType(32)                                            │
+│           │ OUT    s_axi_config_rresp    UintType(2)                                             │
+│           │ OUT    s_axi_config_rvalid   BitType()                                               │
+│           │ IN     s_axi_config_rready   BitType()                                               │
+│           │ OUT    m_axi_fb_awid         UintType(1)                                             │
+│           │ OUT    m_axi_fb_awaddr       UintType(32)                                            │
+│           │ OUT    m_axi_fb_awlen        UintType(8)                                             │
+│           │ OUT    m_axi_fb_awsize       UintType(3)                                             │
+│           │ OUT    m_axi_fb_awburst      UintType(2)                                             │
+│           │ OUT    m_axi_fb_awlock       BitType()                                               │
+│           │ OUT    m_axi_fb_awcache      UintType(4)                                             │
+│           │ OUT    m_axi_fb_awprot       UintType(3)                                             │
+│           │ OUT    m_axi_fb_awqos        UintType(4)                                             │
+│           │ OUT    m_axi_fb_awuser       UintType(1)                                             │
+│           │ OUT    m_axi_fb_awvalid      BitType()                                               │
+│           │ IN     m_axi_fb_awready      BitType()                                               │
+│           │ OUT    m_axi_fb_wdata        UintType(64)                                            │
+│           │ OUT    m_axi_fb_wstrb        UintType(8)                                             │
+│           │ OUT    m_axi_fb_wlast        BitType()                                               │
+│           │ OUT    m_axi_fb_wuser        UintType(1)                                             │
+│           │ OUT    m_axi_fb_wvalid       BitType()                                               │
+│           │ IN     m_axi_fb_wready       BitType()                                               │
+│           │ IN     m_axi_fb_bid          UintType(1)                                             │
+│           │ IN     m_axi_fb_bresp        UintType(2)                                             │
+│           │ IN     m_axi_fb_buser        UintType(1)                                             │
+│           │ IN     m_axi_fb_bvalid       BitType()                                               │
+│           │ OUT    m_axi_fb_bready       BitType()                                               │
+│           │ OUT    m_axi_fb_arid         UintType(1)                                             │
+│           │ OUT    m_axi_fb_araddr       UintType(32)                                            │
+│           │ OUT    m_axi_fb_arlen        UintType(8)                                             │
+│           │ OUT    m_axi_fb_arsize       UintType(3)                                             │
+│           │ OUT    m_axi_fb_arburst      UintType(2)                                             │
+│           │ OUT    m_axi_fb_arlock       BitType()                                               │
+│           │ OUT    m_axi_fb_arcache      UintType(4)                                             │
+│           │ OUT    m_axi_fb_arprot       UintType(3)                                             │
+│           │ OUT    m_axi_fb_arqos        UintType(4)                                             │
+│           │ OUT    m_axi_fb_aruser       UintType(1)                                             │
+│           │ OUT    m_axi_fb_arvalid      BitType()                                               │
+│           │ IN     m_axi_fb_arready      BitType()                                               │
+│           │ IN     m_axi_fb_rid          UintType(1)                                             │
+│           │ IN     m_axi_fb_rdata        UintType(64)                                            │
+│           │ IN     m_axi_fb_rresp        UintType(2)                                             │
+│           │ IN     m_axi_fb_rlast        BitType()                                               │
+│           │ IN     m_axi_fb_ruser        UintType(1)                                             │
+│           │ IN     m_axi_fb_rvalid       BitType()                                               │
+│           │ OUT    m_axi_fb_rready       BitType()                                               │
+│           │ INOUT  axi_aclk              BitType()                                               │
+│           │ IN     axi_aresetn           BitType()                                               │
+├───────────┼──────────────────────────────────────────────────────────────────────────────────────┤
+│ addrmap   │ Size: 512 bytes                                                                      │
+│           │                                                                                      │
+│           │ | Addrspace | Type | Base   | Size              | Attributes |                       │
+│           │ | --------- | ---- | ----   | ----              | ---------- |                       │
+│           │ | AB0       | -    | +0x0   | 64x32 (256 bytes) | Sub        |                       │
+│           │ | AB1       | -    | +0x100 | 64x32 (256 bytes) | Sub        |                       │
+│           │                                                                                      │
+│           │                                                                                      │
+│           │ | Addrspace | Word  | Field         | Offset    | Access | Reset  | Attributes     | │
+│           │ | --------- | ----  | -----         | ------    | ------ | -----  | ----------     | │
+│           │ | AB0       |       |               | +0x0      |        |        |                | │
+│           │ | AB0       | creg0 |               |   +0      |        |        |                | │
+│           │ | AB0       | creg0 | feature0      |     0     | RW/-   | 0x0    | Volatile       | │
+│           │ | AB0       | creg0 | feature_speed |     2:1   | RW/-   | 0x0    |                | │
+│           │ | AB0       | creg0 | feature0_addr |     3     | RW/-   | 0x1    |                | │
+│           │ | AB0       | creg0 | feature1_addr |     4     | RO/-   | 0x1    | CONST          | │
+│           │ | AB0       | creg0 | feature1      |     5     | RW/-   | 0x1    | Volatile       | │
+│           │ | AB0       | creg0 | feature2      |     6     | RW/-   | 0x1    | Volatile       | │
+│           │ | AB0       | creg0 | feature3      |     7     | RW/-   | 0x0    | Volatile       | │
+│           │ | AB0       | creg0 | feature4      |     8     | RW/-   | 0x0    | Volatile       | │
+│           │ | AB0       | creg0 | feature5      |     9     | RW/-   | 0x1    | Volatile       | │
+│           │ | AB0       | creg0 | feature6      |     10    | RW/-   | 0x1    | Volatile       | │
+│           │ | AB0       | creg0 | feature7      |     11    | RW/-   | 0x0    | Volatile       | │
+│           │ | AB0       | creg0 | fsm_state     |     15:12 | RO/-   | 0x5    | CONST          | │
+│           │ | AB0       | creg0 | status_reg0   |     16    | RO/-   | 0x0    | CONST          | │
+│           │ | AB0       | creg0 | status_reg1   |     17    | RO/-   | 0x0    | CONST          | │
+│           │ | AB0       | creg0 | status_reg2   |     18    | RO/-   | 0x1    | CONST          | │
+│           │ | AB0       | creg0 | status_reg3   |     19    | RO/-   | 0x0    | Volatile,CONST | │
+│           │ | AB0       | creg0 | status_reg4   |     31:20 | RO/-   | 0x123  | CONST          | │
+│           │ | AB0       | creg1 |               |   +4      |        |        | Volatile       | │
+│           │ | AB0       | creg1 | feature0      |     31:0  | RW/-   | 0x4A34 | Volatile       | │
+│           │ | AB1       |       |               | +0x100    |        |        |                | │
+│           │ | AB1       | creg0 |               |   +0      |        |        | Volatile       | │
+│           │ | AB1       | creg0 | feature0      |     0     | RW/-   | 0x0    | Volatile       | │
+│           │ | AB1       | creg0 | feature1      |     1     | RW/-   | 0x0    | Volatile       | │
+│           │ | AB1       | creg1 |               |   +4      |        |        | Volatile       | │
+│           │ | AB1       | creg1 | feature0      |     31:0  | RW/-   | 0x4A34 | Volatile       | │
+╘═══════════╧══════════════════════════════════════════════════════════════════════════════════════╛

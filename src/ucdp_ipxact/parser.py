@@ -24,13 +24,14 @@
 
 """IPXACT Parser."""
 
+from abc import abstractmethod
 from collections.abc import Iterator
 from pathlib import Path
 
 import ucdp as u
-from ucdp_glbl.addrspace import Addrspace
+from ucdp_addr.addrspace import Addrspace
 
-from .parserresult import ParserResult
+from .ipxact import UcdpIpxact
 
 
 class Parser(u.Object):
@@ -48,33 +49,42 @@ class Parser(u.Object):
         """Validate."""
         raise NotImplementedError
 
-    def parse(self, filepath: Path) -> ParserResult:
+    def parse(self, filepath: Path) -> UcdpIpxact:
         """Parse."""
         data = self._read(filepath)
-        return ParserResult(
+        return UcdpIpxact(
+            vendor=self._get_vendor(data),
+            version=self._get_version(data),
             libname=self._get_library(data),
-            modname=self._get_name(data),
+            name=self._get_name(data),
             ports=tuple(self._get_ports(data)),
             addrspaces=tuple(self._get_addrspaces(data)),
         )
 
+    @abstractmethod
     def _read(self, filepath: Path):
         raise NotImplementedError
 
+    @abstractmethod
     def _get_vendor(self, data) -> str:
         raise NotImplementedError
 
+    @abstractmethod
     def _get_name(self, data) -> str:
         raise NotImplementedError
 
+    @abstractmethod
     def _get_library(self, data) -> str:
         raise NotImplementedError
 
+    @abstractmethod
     def _get_version(self, data) -> str:
         raise NotImplementedError
 
+    @abstractmethod
     def _get_ports(self, data) -> Iterator[u.Port]:
         raise NotImplementedError
 
+    @abstractmethod
     def _get_addrspaces(self, data) -> Iterator[Addrspace]:
         raise NotImplementedError
