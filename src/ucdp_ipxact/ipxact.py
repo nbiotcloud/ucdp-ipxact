@@ -24,25 +24,37 @@
 
 """Unified Chip Design Platform - IPXACT."""
 
-from inspect import getfile
 from logging import getLogger
-from pathlib import Path
 
 import ucdp as u
+from tabulate import tabulate
+from ucdp_addr import AddrMap, Addrspace
 
 LOGGER = getLogger(__name__)
 
 
-class UcdpIpxactMod(u.AMod):
-    """IPXACT Import Module."""
+class UcdpIpxact(u.Object):
+    """UCDP Representation of IPXACT."""
 
-    filepath: Path
+    vendor: str
+    version: str
+    libname: str
+    name: str
+    ports: tuple[u.Port, ...] = ()
+    addrspaces: tuple[Addrspace, ...] = ()
+    filelists: u.ModFileLists = ()
 
-    def _build(self):
-        basedir = Path(getfile(self.parent.__class__)).parent if self.parent else None
-        filepath = u.improved_resolve(self.filepath, basedir=basedir, strict=True, replace_envvars=True)
-        LOGGER.debug("Reading %s", filepath)
-        self.add_port(u.UintType(20), "port_i")
-
-    # def get_addrspaces(self) -> Iterator[Addrspace]:
-    #     yield
+    def get_overview(self) -> str:
+        """Nice Overview."""
+        addrmap = AddrMap.from_addrspaces(self.addrspaces)
+        ports = [(port.direction, port.name, port.type_) for port in self.ports]
+        data = (
+            ("Attribute", "Value"),
+            ("vendor", self.vendor),
+            ("version", self.version),
+            ("libname", self.libname),
+            ("name", self.name),
+            ("ports", tabulate(ports, headers=("I/O", "Name", "Type"))),
+            ("addrmap", addrmap.get_overview()),
+        )
+        return tabulate(data, tablefmt="fancy_grid") + "\n"

@@ -24,26 +24,44 @@
 
 """Command Line Interface."""
 
+import sys
+from contextlib import contextmanager
 from pathlib import Path
 
 import click
-from ucdp.cli import pass_ctx
+import ucdp as u
 
-from ucdp_ipxact.parser import validate
-from ucdp_ipxact.ucdp_ipxact import UcdpIpxactMod
+from ucdp_ipxact import UcdpIpxact, get_parser
+
+ipxact = u.cli.get_group("IPXACT Commands")
 
 
-@click.group()
-def ipxact():
-    """IPXACT Commands."""
+@contextmanager
+def _load(console, filepath: Path) -> UcdpIpxact:
+    try:
+        parser = get_parser(filepath)
+        parser.validate(filepath)
+        ucdp_ipxact = parser.parse(filepath)
+    except Exception as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        print(f"'{filepath!s}' is INVALID.")
+        sys.exit(1)
+    yield ucdp_ipxact
 
 
 @ipxact.command()
-@click.argument("ipxact", type=click.Path(exists=True))
-@pass_ctx
+@click.argument("ipxact", type=click.Path(exists=True, path_type=Path))
+@u.cli.pass_ctx
 def check(ctx, ipxact: Path):
-    """Check - Validate IPXACT and try to import."""
-    ipxact = Path(ipxact)
-    validate(ipxact)
-    UcdpIpxactMod(filepath=ipxact)
-    ctx.console.log(f"{str(ipxact)!r} checked.")
+    """Validate IPXACT and convert to UCDP Format."""
+    with _load(ctx.console, ipxact):
+        print(f"'{ipxact!s}' is valid.")
+
+
+@ipxact.command()
+@click.argument("ipxact", type=click.Path(exists=True, path_type=Path))
+@u.cli.pass_ctx
+def overview(ctx, ipxact: Path):
+    """Load IPXACT and Show Overview."""
+    with _load(ctx.console, ipxact) as ucdp_result:
+        print(ucdp_result.get_overview())

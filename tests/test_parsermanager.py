@@ -21,20 +21,38 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
+"""Test Parser Manager."""
 
-"""Unified Chip Design Platform - IPXACT."""
+import re
 
-from .ipxact import UcdpIpxact
-from .mod import UcdpIpxactMod
-from .parser import Parser
-from .parsermanager import ParserManager, get_parser, parse, validate
+from pytest import raises
+from ucdp_ipxact.parsermanager import ParserManager
 
-__all__ = [
-    "get_parser",
-    "parse",
-    "Parser",
-    "ParserManager",
-    "UcdpIpxact",
-    "UcdpIpxactMod",
-    "validate",
-]
+
+def test_basics():
+    """Basic Testing."""
+    parsermanager = ParserManager()
+    assert len(parsermanager.parsers) == 0
+
+
+def test_create():
+    """Check Parser Manager Initialization."""
+    parsermanager = ParserManager.create()
+    assert len(parsermanager.parsers) == 1
+
+
+def test_compatible():
+    """Check Parser Manager is_compatible."""
+    parsermanager = ParserManager.create()
+    assert parsermanager.is_compatible("tests/testdata/example-2009.xml") is True
+    assert parsermanager.is_compatible("tests/testdata/empty.xml") is False
+
+
+def test_validate():
+    """Check Parser Manager validate."""
+    parsermanager = ParserManager.create()
+    assert parsermanager.validate("tests/testdata/example-2009.xml") is True
+
+    msg = "Unknown schema in"
+    with raises(ValueError, match=re.escape(msg)):
+        parsermanager.validate("tests/testdata/empty.xml")

@@ -35,13 +35,17 @@ classifiers = [
 ]
 requires-python = ">=3.10.0,<4.0"
 dependencies = [
-    "ucdp>=0.4.1",
-    "ucdp-glbl>=0.2.0",
+    "ucdp>=0.11.0",
+    "ucdp-glbl>=0.5.0",
+    "xsdata[cli,lxml,soap]>=24.5",
+    "xmlschema>=3.3.1",
+    "defusedxml>=0.7.1",
+    "ucdp-addr>=1.0.1",
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/nbiotcloud/ucdp-ipxact"
-"Documentation" = "https://ucdp-ipxact.readthedocs.io/en/latest/"
+"Documentation" = "https://ucdp-ipxact.readthedocs.io/en/stable/"
 "Bug Tracker" = "https://github.com/nbiotcloud/ucdp-ipxact/issues"
 
 [build-system]
@@ -74,8 +78,14 @@ doc = [
 [tool.pdm.build]
 includes = ["src/ucdp_ipxact"]
 
+[project.scripts]
+ucdp-ipxact = "ucdp_ipxact.cli:ipxact"
+
 [project.entry-points."ucdp.cli"]
 ipxact = "ucdp_ipxact.cli.ipxact"
+
+[project.entry-points."ucdp_ipxact.parser"]
+Spirit2009Parser = "ucdp_ipxact.spirit_1685_2009.parser.Spirit2009Parser"
 
 [tool.ruff]
 line-length = 120

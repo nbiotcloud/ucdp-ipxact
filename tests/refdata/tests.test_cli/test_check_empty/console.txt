@@ -1,0 +1,2 @@
+ERROR: Unknown schema in tests/testdata/empty.xml
+'tests/testdata/empty.xml' is INVALID.
