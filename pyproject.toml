@@ -24,7 +24,7 @@
 
 [project]
 name = "ucdp-ipxact"
-version = "0.2.0"
+version = ["dynamic"]
 description = "Unified Chip Design Platform - IPXACT"
 readme = "README.md"
 authors = [
@@ -51,6 +51,9 @@ dependencies = [
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
+[tool.pdm.version]
+source = "scm"
 
 [tool.pdm]
 [tool.pdm.dev-dependencies]
