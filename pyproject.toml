@@ -24,7 +24,7 @@
 
 [project]
 name = "ucdp-ipxact"
-version = ["dynamic"]
+dynamic = ["version"]
 description = "Unified Chip Design Platform - IPXACT"
 readme = "README.md"
 authors = [
